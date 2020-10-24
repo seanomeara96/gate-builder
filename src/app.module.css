@@ -84,11 +84,14 @@
   z-index: -1;
 }
 .resultsCard {
-  width: 300px;
+  width: 100%;
+  box-sizing: border-box;
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   background-color: #fff;
+  position: relative;
 }
+
 .resultsCard__img {
   width: 300px;
   height: 300px;
@@ -96,11 +99,21 @@
   object-fit: cover;
   border-radius: 12px;
 }
+.resultsCard__imgs {
+  width: auto;
+  clear: both;
+}
+.resultsCard__imgs > img {
+  position: absolute;
+}
 
 .resultsCard__title {
   font-size: 1.25rem;
   font-weight: 400;
-  margin-bottom: 0;
+  margin-bottom: 0.875rem;
+}
+.resultsCard__heading {
+  margin-bottom: 0.875rem;
 }
 .button__smallButton {
   font-size: 1rem;

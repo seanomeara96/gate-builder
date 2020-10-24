@@ -5,10 +5,20 @@ import img from "./images/find-gate.webp";
 import { options } from "./options";
 
 class App extends React.Component {
-  state = { width: 0, bundle: [] };
+  emptyBundle = {
+    gate: 0,
+    smallExtension: 0,
+    medExtension: 0,
+    largeExtension: 0,
+  };
+  state = {
+    width: 0,
+    bundle: { ...this.emptyBundle },
+  };
   options = options;
   buildGate() {
-    this.setState({ bundle: [] });
+    let bundle = { ...this.emptyBundle };
+    this.setState({ bundle });
     const {
       gate,
       largeExtension,
@@ -19,67 +29,47 @@ class App extends React.Component {
     // I think the gate width should be the max width i.e. 79
     let sizeRequirement = this.state.width;
     // 120
-    let bundle = [];
     // take away premier gate size
-
+    if (
+      sizeRequirement <= gate.length &&
+      sizeRequirement >= gate.length - tolerance
+    ) {
+      bundle.gate++;
+      this.setState({ bundle }, () => {
+        console.log(this.state);
+      });
+      return;
+    }
     if (sizeRequirement > gate.length) {
       // if it's the same size as the gate or within its tolerance
-      if (
-        sizeRequirement <= gate.length &&
-        sizeRequirement >= gate.length - tolerance
-      ) {
-        bundle.push("gate");
-        return bundle;
-      }
-
       sizeRequirement = sizeRequirement - gate.length;
+
       // 120 - 76 = 44
       // add gate to bundle
-      bundle.push(
-        Object.keys(this.options).find(
-          (key) => this.options[key].length === gate.length
-        )
-      );
+      bundle.gate++;
 
       // if remainder is big enough to take away 64, 32, 14
-
       while (sizeRequirement > smallExtension.length) {
         if (sizeRequirement >= largeExtension.length) {
           sizeRequirement = sizeRequirement - largeExtension.length;
-
-          bundle.push(
-            Object.keys(this.options).find(
-              (key) => this.options[key].length === largeExtension.length
-            )
-          );
+          bundle.largeExtension++;
         } else if (
           sizeRequirement >= medExtension.length &&
           sizeRequirement < largeExtension.length
         ) {
           sizeRequirement = sizeRequirement - medExtension.length;
-
-          bundle.push(
-            Object.keys(this.options).find(
-              (key) => this.options[key].length === medExtension.length
-            )
-          );
+          bundle.medExtension++;
         } else if (
           sizeRequirement >= smallExtension.length &&
           sizeRequirement < medExtension.length
         ) {
           sizeRequirement = sizeRequirement - smallExtension.length;
-          bundle.push(
-            Object.keys(this.options).find(
-              (key) => this.options[key].length === smallExtension.length
-            )
-          );
+          bundle.smallExtension++;
         } else {
           console.log("Error in if else statement", sizeRequirement);
         }
       }
-
       // do so and add it to the bundle
-      console.log("bundle", bundle);
       this.setState({ bundle }, () => {
         console.log(this.state);
       });
@@ -94,8 +84,40 @@ class App extends React.Component {
     }, 5000);
   }
   renderBundle() {
-    let cards = [];
-    return cards;
+    const { bundle } = this.state;
+    let listItem = [];
+    let images = [];
+    if (bundle.gate > 0) {
+      let count = 25;
+      for (var item in bundle) {
+        if (bundle[item] > 0) {
+          listItem.unshift(
+            <div
+              className={styles.resultsCard__title}
+            >{`${bundle[item]} x ${this.options[item].name}`}</div>
+          );
+          for (var i = 0; i < bundle[item]; i++) {
+            images.push(
+              <img
+                style={{ zIndex: count }}
+                className={styles.resultsCard__img}
+                src={this.options[item].img}
+              />
+            );
+          }
+        }
+        count--;
+      }
+      return (
+        <div className={styles.resultsCard}>
+          <div className={styles.resultsCard__content}>
+            <h2 className={styles.resultsCard__heading}>Your Bundle:</h2>
+            {listItem}
+          </div>
+          <div className={styles.resultsCard__imgs}>{images}</div>
+        </div>
+      );
+    }
   }
   render() {
     return (
