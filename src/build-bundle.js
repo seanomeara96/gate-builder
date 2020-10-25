@@ -1,74 +1,69 @@
 // takes a gate and associated extensions and returns a bundle that satisfies the size requirement
-function buildBundle(options, sizeRequirement) {
-  let bundle = {};
-
-  const {
-    gate,
-    largeExtension,
-    medExtension,
-    smallExtension,
-    tolerance,
-    isExtension,
-  } = options;
-
+export function buildBundle(options, width) {
   let sizeRequirement = width;
+  const { gate } = options;
+  let bundle = {};
+  let extensions = [];
+
+  for (var item in options) {
+    bundle[item] = 0;
+    if (options[item].isExtension === true) {
+      extensions.push(item);
+    }
+  }
 
   if (
     sizeRequirement <= gate.length &&
-    sizeRequirement >= gate.length - tolerance
+    sizeRequirement >= gate.length - gate.tolerance
   ) {
     bundle.gate++;
-    this.setState({ bundle }, () => {
-      console.log(this.state);
-    });
-    return;
+    return bundle;
   }
+
+  let rankedByLength = extensions.sort(
+    (a, b) => options[b].length - options[a].length
+  );
+
   if (sizeRequirement > gate.length) {
-    // if it's the same size as the gate or within its tolerance
-    sizeRequirement = sizeRequirement - gate.length;
-
-    // 120 - 76 = 44
-    // add gate to bundle
     bundle.gate++;
-
-    // if remainder is big enough to take away 64, 32, 14
-    while (sizeRequirement > smallExtension.length) {
-      if (sizeRequirement >= largeExtension.length) {
-        sizeRequirement = sizeRequirement - largeExtension.length;
-        bundle.largeExtension++;
-      } else if (
-        sizeRequirement >= medExtension.length &&
-        sizeRequirement < largeExtension.length
-      ) {
-        sizeRequirement = sizeRequirement - medExtension.length;
-        bundle.medExtension++;
-      } else if (
-        sizeRequirement >= smallExtension.length &&
-        sizeRequirement < medExtension.length
-      ) {
-        sizeRequirement = sizeRequirement - smallExtension.length;
-        bundle.smallExtension++;
-      } else {
-        console.log("Error in if else statement", sizeRequirement);
+    sizeRequirement -= gate.length;
+    while (
+      sizeRequirement >
+      options[rankedByLength[rankedByLength.length - 1]].length
+    ) {
+      for (var x in rankedByLength) {
+        while (sizeRequirement > options[rankedByLength[x]].length) {
+          bundle[rankedByLength[x]]++;
+          sizeRequirement -= options[rankedByLength[x]].length;
+        }
       }
     }
     if (sizeRequirement > 0) {
-      bundle.smallExtension++;
+      bundle[rankedByLength[rankedByLength.length - 1]]++;
     }
     return bundle;
-  } else {
-    this.flashError("We don't have any configurations this small.");
   }
 }
-this.setState({ bundle, errorMessage: "" }, () => {
-  this.setState({ bundle: this.buildBundle() }, () => {
-    // compute total bundle max-length
-    let totalBundleMaxLength = 0;
-    for (var k in this.state.bundle) {
-      totalBundleMaxLength += this.options[k].length * this.state.bundle[k];
-    }
-    this.setState({ totalBundleMaxLength }, () => {
-      console.log("totalBundleMaxLength", this.state.totalBundleMaxLength);
-    });
-  });
-});
+
+/**
+ * this.flashError("We don't have any configurations this small.");
+if (sizeRequirement >= largeExtension.length) {
+  bundle.largeExtension++;
+  sizeRequirement = sizeRequirement - largeExtension.length;
+} else if (
+  sizeRequirement >= medExtension.length &&
+  sizeRequirement < largeExtension.length
+) {
+  bundle.medExtension++;
+  sizeRequirement -= medExtension.length;
+} else if (
+  sizeRequirement >= smallExtension.length &&
+  sizeRequirement < medExtension.length
+) {
+  bundle.smallExtension++;
+  sizeRequirement -= smallExtension.length;
+} else {
+  console.log("Error in if else statement", sizeRequirement);
+}
+
+ */

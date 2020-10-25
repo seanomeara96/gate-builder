@@ -3,7 +3,6 @@ import smallExtensionImg from "./images/smallExtension.jpg";
 import medExtensionImg from "./images/medExtension.jpg";
 import largeExtensionImg from "./images/largeExtension.jpg";
 export const options = {
-  tolerance: 6,
   gate: {
     name:
       "BabyDan Premier True Pressure Fit Safety Gate - White (73.5 - 79.6cm)",
@@ -12,6 +11,7 @@ export const options = {
     id: 1,
     img: gateImg,
     isExtension: false,
+    tolerance: 6,
   },
   largeExtension: {
     name: "BabyDan Premier Gate Extension 64.5cm",
@@ -20,6 +20,7 @@ export const options = {
     id: 2,
     img: largeExtensionImg,
     isExtension: true,
+    tolerance: 0,
   },
   medExtension: {
     name: "Babydan Premier Gate Extension 32cm",
@@ -28,6 +29,7 @@ export const options = {
     id: 3,
     img: medExtensionImg,
     isExtension: true,
+    tolerance: 0,
   },
   smallExtension: {
     name: "BabyDan Standard Extend-A-Gate Kit - White ( 7cm)",
@@ -36,5 +38,6 @@ export const options = {
     id: 4,
     img: smallExtensionImg,
     isExtension: true,
+    tolerance: 0,
   },
 };

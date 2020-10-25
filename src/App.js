@@ -3,7 +3,7 @@ import Icon from "./components/icon";
 import styles from "./app.module.css";
 import img from "./images/find-gate.webp";
 import { options } from "./options";
-
+import { buildBundle } from "./build-bundle";
 class App extends React.Component {
   state = {
     width: 0,
@@ -15,78 +15,6 @@ class App extends React.Component {
     cartModalIsOpen: false,
   };
   options = options;
-  buildGate() {
-    let bundle = { ...this.emptyBundle };
-    this.setState({ bundle, errorMessage: "" });
-    const {
-      gate,
-      largeExtension,
-      medExtension,
-      smallExtension,
-      tolerance,
-    } = this.options;
-    // I think the gate width should be the max width i.e. 79
-    let sizeRequirement = this.state.width;
-    // 120
-    // take away premier gate size
-    if (
-      sizeRequirement <= gate.length &&
-      sizeRequirement >= gate.length - tolerance
-    ) {
-      bundle.gate++;
-      this.setState({ bundle }, () => {
-        console.log(this.state);
-      });
-      return;
-    }
-    if (sizeRequirement > gate.length) {
-      // if it's the same size as the gate or within its tolerance
-      sizeRequirement = sizeRequirement - gate.length;
-
-      // 120 - 76 = 44
-      // add gate to bundle
-      bundle.gate++;
-
-      // if remainder is big enough to take away 64, 32, 14
-      while (sizeRequirement > smallExtension.length) {
-        if (sizeRequirement >= largeExtension.length) {
-          sizeRequirement = sizeRequirement - largeExtension.length;
-          bundle.largeExtension++;
-        } else if (
-          sizeRequirement >= medExtension.length &&
-          sizeRequirement < largeExtension.length
-        ) {
-          sizeRequirement = sizeRequirement - medExtension.length;
-          bundle.medExtension++;
-        } else if (
-          sizeRequirement >= smallExtension.length &&
-          sizeRequirement < medExtension.length
-        ) {
-          sizeRequirement = sizeRequirement - smallExtension.length;
-          bundle.smallExtension++;
-        } else {
-          console.log("Error in if else statement", sizeRequirement);
-        }
-      }
-      if (sizeRequirement > 0) {
-        bundle.smallExtension++;
-      }
-      // do so and add it to the bundle
-      this.setState({ bundle }, () => {
-        console.log(this.state);
-        // compute total bundle max-length
-        let totalBundleMaxLength = 0;
-        for (var k in this.state.bundle) {
-          totalBundleMaxLength += this.options[k].length * this.state.bundle[k];
-        }
-        this.setState({ totalBundleMaxLength }, () => {
-          console.log("totalBundleMaxLength", this.state.totalBundleMaxLength);
-        });
-      });
-    } else {
-      this.flashError("We don't have any configurations this small.");
-    }
-  }
 
   flashError(errorMessage) {
     this.setState({ errorMessage });
@@ -142,8 +70,8 @@ class App extends React.Component {
             <div className={styles.wrapper}>
               <h2 className={styles.resultsCard__heading}>
                 Your Bundle: (
-                {this.state.totalBundleMaxLength - this.options.tolerance}cm -{" "}
-                {this.state.totalBundleMaxLength}cm)
+                {this.state.totalBundleMaxLength - this.options.gate.tolerance}
+                cm - {this.state.totalBundleMaxLength}cm)
               </h2>
               {listItem}
               <button
@@ -176,7 +104,25 @@ class App extends React.Component {
             className={styles.form}
             onSubmit={(e) => {
               e.preventDefault();
-              this.buildGate();
+              this.setState({ bundle: {}, errorMessage: "" }, () => {
+                this.setState(
+                  { bundle: buildBundle(this.options, this.state.width) },
+                  () => {
+                    // compute total bundle max-length
+                    let totalBundleMaxLength = 0;
+                    for (var k in this.state.bundle) {
+                      totalBundleMaxLength +=
+                        this.options[k].length * this.state.bundle[k];
+                    }
+                    this.setState({ totalBundleMaxLength }, () => {
+                      console.log(
+                        "totalBundleMaxLength",
+                        this.state.totalBundleMaxLength
+                      );
+                    });
+                  }
+                );
+              });
             }}
           >
             <img alt="baby gate" className={styles.img} src={img} />
