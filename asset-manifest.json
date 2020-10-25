@@ -1,0 +1,27 @@
+{
+  "files": {
+    "main.css": "/gate-builder/static/css/main.c485ea3e.chunk.css",
+    "main.js": "/gate-builder/static/js/main.7a09b110.chunk.js",
+    "main.js.map": "/gate-builder/static/js/main.7a09b110.chunk.js.map",
+    "runtime-main.js": "/gate-builder/static/js/runtime-main.97fc3688.js",
+    "runtime-main.js.map": "/gate-builder/static/js/runtime-main.97fc3688.js.map",
+    "static/js/2.d98311d8.chunk.js": "/gate-builder/static/js/2.d98311d8.chunk.js",
+    "static/js/2.d98311d8.chunk.js.map": "/gate-builder/static/js/2.d98311d8.chunk.js.map",
+    "index.html": "/gate-builder/index.html",
+    "precache-manifest.3cb080cf05234cc203a2cc9f60dcd872.js": "/gate-builder/precache-manifest.3cb080cf05234cc203a2cc9f60dcd872.js",
+    "service-worker.js": "/gate-builder/service-worker.js",
+    "static/css/main.c485ea3e.chunk.css.map": "/gate-builder/static/css/main.c485ea3e.chunk.css.map",
+    "static/js/2.d98311d8.chunk.js.LICENSE.txt": "/gate-builder/static/js/2.d98311d8.chunk.js.LICENSE.txt",
+    "static/media/find-gate.webp": "/gate-builder/static/media/find-gate.0a5c1045.webp",
+    "static/media/gate.webp": "/gate-builder/static/media/gate.846493bc.webp",
+    "static/media/largeExtension.jpg": "/gate-builder/static/media/largeExtension.4b3faf17.jpg",
+    "static/media/medExtension.jpg": "/gate-builder/static/media/medExtension.a7d6bc1f.jpg",
+    "static/media/smallExtension.jpg": "/gate-builder/static/media/smallExtension.7d395a71.jpg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.97fc3688.js",
+    "static/js/2.d98311d8.chunk.js",
+    "static/css/main.c485ea3e.chunk.css",
+    "static/js/main.7a09b110.chunk.js"
+  ]
+}
