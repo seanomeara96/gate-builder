@@ -14,11 +14,12 @@ class App extends React.Component {
   state = {
     width: 0,
     bundle: { ...this.emptyBundle },
+    cart: [],
   };
   options = options;
   buildGate() {
     let bundle = { ...this.emptyBundle };
-    this.setState({ bundle });
+    this.setState({ bundle, errorMessage: "" });
     const {
       gate,
       largeExtension,
@@ -88,7 +89,6 @@ class App extends React.Component {
     let listItem = [];
     let images = [];
     if (bundle.gate > 0) {
-      let count = 25;
       for (var item in bundle) {
         if (bundle[item] > 0) {
           listItem.unshift(
@@ -99,20 +99,26 @@ class App extends React.Component {
           for (var i = 0; i < bundle[item]; i++) {
             images.push(
               <img
-                style={{ zIndex: count }}
+                alt={this.options[item].name}
                 className={styles.resultsCard__img}
                 src={this.options[item].img}
               />
             );
           }
         }
-        count--;
       }
       return (
         <div className={styles.resultsCard}>
           <div className={styles.resultsCard__content}>
-            <h2 className={styles.resultsCard__heading}>Your Bundle:</h2>
-            {listItem}
+            <div className={styles.wrapper}>
+              <h2 className={styles.resultsCard__heading}>Your Bundle:</h2>
+              {listItem}
+              <button
+                className={`${styles.button} ${styles.button__smallButton}`}
+              >
+                Add Bundle To Cart
+              </button>
+            </div>
           </div>
           <div className={styles.resultsCard__imgs}>{images}</div>
         </div>
@@ -153,13 +159,9 @@ class App extends React.Component {
         </div>
         <div className={styles.results}>
           <div className={styles.wrapper}>
-            <div className={styles.wrapper}>
-              <div className={styles.errorMessage}>
-                {this.state.errorMessage}
-              </div>
-            </div>
-            {this.renderBundle()}
+            <div className={styles.errorMessage}>{this.state.errorMessage}</div>
           </div>
+          {this.renderBundle()}
         </div>
       </div>
     );
