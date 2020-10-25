@@ -15,18 +15,32 @@
   padding: 1rem 2rem;
 }
 .icon {
-  height: 1.5rem;
+  height: 2rem;
   cursor: pointer;
 }
 .icon:hover {
   fill: #ec1d58;
+}
+.pill {
+  position: absolute;
+  top: 0rem;
+  right: -0.5rem;
+  border-radius: 50%;
+  height: 1.2rem;
+  width: 1.2rem;
+  background-color: #ec1d58;
+  color: #fff;
+  display: inline-block;
+  font-size: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .button {
   background-color: #ec1d58;
   color: #fff;
   border: none;
 }
-
 .button:hover {
   background-color: #9d133a;
 }
@@ -52,7 +66,6 @@
     font-size: 1.5rem;
   }
 }
-
 .button,
 .input {
   border-radius: 12px;
@@ -91,7 +104,6 @@
   margin-right: 2rem;
   margin-left: 2rem;
 }
-
 .results {
   background-color: #fff;
   padding: 2rem 0;
@@ -119,7 +131,6 @@
   flex-wrap: wrap;
   padding: 1rem 2rem;
 }
-
 .resultsCard__img {
   width: 300px;
   height: 300px;
@@ -134,7 +145,6 @@
 .resultsCard__img:last-child {
   margin-right: 0;
 }
-
 .resultsCard__title {
   font-size: 1.25rem;
   font-weight: 400;
