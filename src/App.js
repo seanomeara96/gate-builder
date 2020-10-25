@@ -5,12 +5,6 @@ import img from "./images/find-gate.webp";
 import { options } from "./options";
 
 class App extends React.Component {
-  emptyBundle = {
-    gate: 0,
-    smallExtension: 0,
-    medExtension: 0,
-    largeExtension: 0,
-  };
   state = {
     width: 0,
     bundle: { ...this.emptyBundle },
@@ -93,13 +87,16 @@ class App extends React.Component {
       this.flashError("We don't have any configurations this small.");
     }
   }
+
   flashError(errorMessage) {
     this.setState({ errorMessage });
     setTimeout(() => {
       this.setState({ errorMessage: "" });
     }, 5000);
   }
+
   updateCart() {
+    console.log("update cart called");
     this.setState({ cart: this.state.bundle }, () => {
       console.log("this.state.cart", this.state.cart);
       // update totals

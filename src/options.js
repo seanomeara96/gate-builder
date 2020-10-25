@@ -11,6 +11,7 @@ export const options = {
     price: 76,
     id: 1,
     img: gateImg,
+    isExtension: false,
   },
   largeExtension: {
     name: "BabyDan Premier Gate Extension 64.5cm",
@@ -18,6 +19,7 @@ export const options = {
     price: 64,
     id: 2,
     img: largeExtensionImg,
+    isExtension: true,
   },
   medExtension: {
     name: "Babydan Premier Gate Extension 32cm",
@@ -25,6 +27,7 @@ export const options = {
     price: 32,
     id: 3,
     img: medExtensionImg,
+    isExtension: true,
   },
   smallExtension: {
     name: "BabyDan Standard Extend-A-Gate Kit - White ( 7cm)",
@@ -32,5 +35,6 @@ export const options = {
     price: 7,
     id: 4,
     img: smallExtensionImg,
+    isExtension: true,
   },
 };
