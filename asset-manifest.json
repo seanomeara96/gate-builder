@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/gate-builder/static/css/main.c485ea3e.chunk.css",
-    "main.js": "/gate-builder/static/js/main.7a09b110.chunk.js",
-    "main.js.map": "/gate-builder/static/js/main.7a09b110.chunk.js.map",
+    "main.css": "/gate-builder/static/css/main.1007a0a1.chunk.css",
+    "main.js": "/gate-builder/static/js/main.27ed1fe2.chunk.js",
+    "main.js.map": "/gate-builder/static/js/main.27ed1fe2.chunk.js.map",
     "runtime-main.js": "/gate-builder/static/js/runtime-main.97fc3688.js",
     "runtime-main.js.map": "/gate-builder/static/js/runtime-main.97fc3688.js.map",
     "static/js/2.d98311d8.chunk.js": "/gate-builder/static/js/2.d98311d8.chunk.js",
     "static/js/2.d98311d8.chunk.js.map": "/gate-builder/static/js/2.d98311d8.chunk.js.map",
     "index.html": "/gate-builder/index.html",
-    "precache-manifest.3cb080cf05234cc203a2cc9f60dcd872.js": "/gate-builder/precache-manifest.3cb080cf05234cc203a2cc9f60dcd872.js",
+    "precache-manifest.ed9bb20e4717bb93f31b51d9826f3fe3.js": "/gate-builder/precache-manifest.ed9bb20e4717bb93f31b51d9826f3fe3.js",
     "service-worker.js": "/gate-builder/service-worker.js",
-    "static/css/main.c485ea3e.chunk.css.map": "/gate-builder/static/css/main.c485ea3e.chunk.css.map",
+    "static/css/main.1007a0a1.chunk.css.map": "/gate-builder/static/css/main.1007a0a1.chunk.css.map",
     "static/js/2.d98311d8.chunk.js.LICENSE.txt": "/gate-builder/static/js/2.d98311d8.chunk.js.LICENSE.txt",
     "static/media/find-gate.webp": "/gate-builder/static/media/find-gate.0a5c1045.webp",
     "static/media/gate.webp": "/gate-builder/static/media/gate.846493bc.webp",
@@ -21,7 +21,7 @@
   "entrypoints": [
     "static/js/runtime-main.97fc3688.js",
     "static/js/2.d98311d8.chunk.js",
-    "static/css/main.c485ea3e.chunk.css",
-    "static/js/main.7a09b110.chunk.js"
+    "static/css/main.1007a0a1.chunk.css",
+    "static/js/main.27ed1fe2.chunk.js"
   ]
 }
