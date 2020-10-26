@@ -2,7 +2,7 @@ import React from "react";
 
 const Icon = (props) => {
   return (
-    <span style={{ position: "relative" }}>
+    <span onClick={props.onClick} style={{ position: "relative" }}>
       <svg
         className={props.className}
         viewBox="0 0 22 26"

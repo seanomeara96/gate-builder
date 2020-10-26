@@ -4,10 +4,11 @@ import styles from "./app.module.css";
 import img from "./images/find-gate.webp";
 import { options } from "./options";
 import { buildBundle } from "./build-bundle";
+import ResultsCard from "./components/results-card";
 class App extends React.Component {
   state = {
     width: 0,
-    bundle: { ...this.emptyBundle },
+    bundle: {},
     totalBundleMaxLength: 0,
     cart: {},
     totalCartItems: 0,
@@ -16,12 +17,12 @@ class App extends React.Component {
   };
   options = options;
 
-  flashError(errorMessage) {
+  flashError = (errorMessage) => {
     this.setState({ errorMessage });
     setTimeout(() => {
       this.setState({ errorMessage: "" });
     }, 5000);
-  }
+  };
 
   updateCart() {
     console.log("update cart called");
@@ -41,16 +42,19 @@ class App extends React.Component {
       });
     });
   }
+
   renderBundle() {
     const { bundle } = this.state;
     let listItem = [];
     let images = [];
+    let count = 0;
     if (bundle.gate > 0) {
       for (var item in bundle) {
         if (bundle[item] > 0) {
           listItem.unshift(
             <div
               className={styles.resultsCard__title}
+              key={count}
             >{`${bundle[item]} x ${this.options[item].name}`}</div>
           );
           for (var i = 0; i < bundle[item]; i++) {
@@ -59,41 +63,73 @@ class App extends React.Component {
                 alt={this.options[item].name}
                 className={styles.resultsCard__img}
                 src={this.options[item].img}
+                key={count + i}
               />
             );
           }
         }
+        count++;
       }
       return (
-        <div className={styles.resultsCard}>
-          <div className={styles.resultsCard__content}>
-            <div className={styles.wrapper}>
-              <h2 className={styles.resultsCard__heading}>
-                Your Bundle: (
-                {this.state.totalBundleMaxLength - this.options.gate.tolerance}
-                cm - {this.state.totalBundleMaxLength}cm)
-              </h2>
-              {listItem}
-              <button
-                className={`${styles.button} ${styles.button__smallButton}`}
-                onClick={() => {
-                  this.updateCart();
-                }}
-              >
-                Add Bundle To Cart
-              </button>
-            </div>
-          </div>
-          <div className={styles.resultsCard__imgs}>{images}</div>
-        </div>
+        <ResultsCard
+          options={this.options}
+          totalBundleMaxLength={this.state.totalBundleMaxLength}
+          listItem={listItem}
+          images={images}
+          onClick={() => {
+            this.updateCart();
+          }}
+        />
       );
     }
+  }
+
+  buildButtonHandler(e) {
+    e.preventDefault();
+    this.setState({ bundle: {}, errorMessage: "" }, () => {
+      if (
+        this.state.width >=
+        this.options.gate.length - this.options.gate.tolerance
+      ) {
+        this.setState(
+          {
+            bundle: buildBundle(this.options, this.state.width),
+          },
+          () => {
+            // compute total bundle max-length
+            let totalBundleMaxLength = 0;
+            for (var k in this.state.bundle) {
+              totalBundleMaxLength +=
+                this.options[k].length * this.state.bundle[k];
+            }
+            this.setState({ totalBundleMaxLength }, () => {
+              console.log(
+                "totalBundleMaxLength",
+                this.state.totalBundleMaxLength
+              );
+            });
+          }
+        );
+      } else {
+        this.flashError("We don't have any configurations this small.");
+      }
+    });
   }
   render() {
     return (
       <div className={styles.app}>
         <header className={styles.header}>
           <Icon
+            onClick={() => {
+              console.log("click");
+              this.setState(
+                {
+                  cartModalIsOpen:
+                    this.state.cartModalIsOpen === false ? true : false,
+                },
+                () => console.log(this.state.cartModalIsOpen)
+              );
+            }}
             count={this.state.totalCartItems}
             pillClassName={styles.pill}
             className={styles.icon}
@@ -103,26 +139,7 @@ class App extends React.Component {
           <form
             className={styles.form}
             onSubmit={(e) => {
-              e.preventDefault();
-              this.setState({ bundle: {}, errorMessage: "" }, () => {
-                this.setState(
-                  { bundle: buildBundle(this.options, this.state.width) },
-                  () => {
-                    // compute total bundle max-length
-                    let totalBundleMaxLength = 0;
-                    for (var k in this.state.bundle) {
-                      totalBundleMaxLength +=
-                        this.options[k].length * this.state.bundle[k];
-                    }
-                    this.setState({ totalBundleMaxLength }, () => {
-                      console.log(
-                        "totalBundleMaxLength",
-                        this.state.totalBundleMaxLength
-                      );
-                    });
-                  }
-                );
-              });
+              this.buildButtonHandler(e);
             }}
           >
             <img alt="baby gate" className={styles.img} src={img} />
