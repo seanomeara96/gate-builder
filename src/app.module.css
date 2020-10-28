@@ -13,7 +13,6 @@
   display: flex;
   justify-content: flex-end;
   padding: 1rem 2rem;
-  position: sticky;
   top: 0;
   z-index: 1000;
 }
@@ -25,6 +24,7 @@
   fill: #ec1d58;
 }
 .pill {
+  cursor: pointer;
   position: absolute;
   top: 0rem;
   right: -0.5rem;
@@ -172,4 +172,7 @@
   color: grey;
   text-decoration: line-through;
   margin-right: 1rem;
+}
+.cartModalContainer {
+  position: relative;
 }

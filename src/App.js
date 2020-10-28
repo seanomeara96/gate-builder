@@ -5,6 +5,7 @@ import img from "./images/find-gate.webp";
 import { options } from "./options";
 import { buildBundle } from "./build-bundle";
 import ResultsCard from "./components/results-card";
+import Cart from "./components/cart";
 class App extends React.Component {
   state = {
     width: 0,
@@ -24,9 +25,13 @@ class App extends React.Component {
     }, 5000);
   };
 
+  emptyCart() {
+    this.setState({ cart: {} });
+  }
+
   updateCart() {
     console.log("update cart called");
-    this.setState({ cart: this.state.bundle }, () => {
+    this.setState({ cart: { ...this.state.bundle } }, () => {
       console.log("this.state.cart", this.state.cart);
       // update totals
       let totalCartItems = 0;
@@ -135,6 +140,14 @@ class App extends React.Component {
             className={styles.icon}
           />
         </header>
+        <div className={styles.cartModalContainer}>
+          <Cart
+            totalCartItems={this.state.totalCartItems}
+            isOpen={this.state.cartModalIsOpen}
+            cartContents={this.state.cart}
+            options={this.options}
+          />
+        </div>
         <div className={styles.wrapper}>
           <form
             className={styles.form}
