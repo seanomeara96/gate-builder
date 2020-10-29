@@ -30,9 +30,7 @@ class App extends React.Component {
   }
 
   updateCart() {
-    console.log("update cart called");
     this.setState({ cart: { ...this.state.bundle } }, () => {
-      console.log("this.state.cart", this.state.cart);
       // update totals
       let totalCartItems = 0;
       for (var x in this.state.bundle) {
@@ -42,9 +40,7 @@ class App extends React.Component {
       for (var i in this.state.bundle) {
         totalCartPrice += this.options[i].price * this.state.bundle[i];
       }
-      this.setState({ totalCartItems, totalCartPrice }, () => {
-        console.log(this.state);
-      });
+      this.setState({ totalCartItems, totalCartPrice });
     });
   }
 
@@ -107,12 +103,7 @@ class App extends React.Component {
               totalBundleMaxLength +=
                 this.options[k].length * this.state.bundle[k];
             }
-            this.setState({ totalBundleMaxLength }, () => {
-              console.log(
-                "totalBundleMaxLength",
-                this.state.totalBundleMaxLength
-              );
-            });
+            this.setState({ totalBundleMaxLength });
           }
         );
       } else {
@@ -126,14 +117,10 @@ class App extends React.Component {
         <header className={styles.header}>
           <Icon
             onClick={() => {
-              console.log("click");
-              this.setState(
-                {
-                  cartModalIsOpen:
-                    this.state.cartModalIsOpen === false ? true : false,
-                },
-                () => console.log(this.state.cartModalIsOpen)
-              );
+              this.setState({
+                cartModalIsOpen:
+                  this.state.cartModalIsOpen === false ? true : false,
+              });
             }}
             count={this.state.totalCartItems}
             pillClassName={styles.pill}

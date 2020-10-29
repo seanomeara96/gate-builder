@@ -2,7 +2,6 @@ import React from "react";
 import styles from "./cart.module.css";
 import CartButtons from "./cart-buttons";
 const Cart = (props) => {
-  console.log(props.cartContents, "props.cartContents");
   let contents = [];
   for (var x in props.cartContents) {
     if (props.cartContents[x] > 0) {
