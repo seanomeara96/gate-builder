@@ -17,7 +17,7 @@ const Cart = (props) => {
   return props.isOpen === true ? (
     <div className={styles.cart}>
       {props.totalCartItems > 0 ? (
-        <div>
+        <div style={{ padding: "3rem" }}>
           {contents}
           <CartButtons />
         </div>

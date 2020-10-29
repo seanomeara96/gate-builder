@@ -153,6 +153,7 @@ class App extends React.Component {
             className={styles.form}
             onSubmit={(e) => {
               this.buildButtonHandler(e);
+              this.button.focus();
             }}
           >
             <img alt="baby gate" className={styles.img} src={img} />
@@ -170,7 +171,12 @@ class App extends React.Component {
               }}
               val={this.state.width}
             />
-            <button className={styles.button}>Build</button>
+            <button
+              className={styles.button}
+              ref={(button) => (this.button = button)}
+            >
+              Build
+            </button>
           </form>
         </div>
         <div className={styles.results}>
