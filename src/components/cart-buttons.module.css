@@ -1,0 +1,31 @@
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+}
+.buttonContainer > button {
+  width: 50%;
+  margin-top: 1rem;
+  margin-right: 0.875rem;
+  padding: 0.6rem;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.buttonContainer > button:last-child {
+  margin-right: 0;
+}
+.primaryButton {
+  background-color: #ec1d58;
+  color: #fff;
+  border: none;
+}
+.primaryButton:hover {
+  background-color: #9d133a;
+}
+.secondaryButton {
+  background-color: #fff;
+  border: 1px solid #000;
+}
+.secondaryButton:hover {
+  background-color: rgb(225, 249, 255);
+  border: 1px solid #000;
+}

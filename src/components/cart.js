@@ -7,9 +7,11 @@ const Cart = (props) => {
   for (var x in props.cartContents) {
     if (props.cartContents[x] > 0) {
       contents.push(
-        <div key={x}>
-          <h3>{props.options[x].name}</h3>
-          <span>{props.options[x].price}</span>
+        <div key={x} className={styles.result}>
+          <h3 className={styles.result__name}>{props.options[x].name}</h3>
+          <span className={styles.result__price}>
+            €{props.options[x].price} &times; {props.cartContents[x]}
+          </span>
         </div>
       );
     }
