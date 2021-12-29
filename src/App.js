@@ -114,15 +114,15 @@ class App extends React.Component {
           totalBundleMaxLength={this.state.totalBundleMaxLength}
           listItem={listItem}
           images={images}
-          onClick={() => {
-            this.updateCart();
-          }}
+          onClick={this.updateCart}
         />
       );
     }
   }
+  /**
+   * compute total bundle max-length
+   */
   bundleMaxLength() {
-    // compute total bundle max-length
     let totalBundleMaxLength = 0;
     for (var k in this.state.bundle) {
       totalBundleMaxLength += this.options[k].length * this.state.bundle[k];
@@ -147,6 +147,10 @@ class App extends React.Component {
       this.flashError("We don't have any configurations this small.");
     }
   }
+  /**
+   * handle the build button click event
+   * @param {object} e
+   */
   buildButtonHandler = (e) => {
     e.preventDefault();
     this.setState(
@@ -155,14 +159,25 @@ class App extends React.Component {
     );
     this.button.focus();
   };
+  /**
+   * handle the size input change event
+   * @param {object} e
+   * @returns result of setState
+   */
   sizeInputChangeHandler = (e) =>
     this.setState({ width: parseInt(e.target.value) });
-
+  /**
+   * handle the click event for toggling the cart modal
+   * @returns result of setState
+   */
   toggleCartModal = () =>
     this.setState({
       cartModalIsOpen: this.state.cartModalIsOpen === false ? true : false,
     });
-
+  /**
+   * render the app
+   * @returns app component
+   */
   render() {
     return (
       <div className={styles.app}>
