@@ -7,6 +7,16 @@ import { buildBundle } from "./build-bundle";
 import ResultsCard from "./components/results-card";
 import Cart from "./components/cart";
 class App extends React.Component {
+  /**
+   * app state
+   * width: the width of gate required
+   * bundle: the bundle of gate and extensions required to reach a certain width
+   * cart: the user's shopping cart
+   * totalCartItems: total number of items in the user's cart
+   * totalCartPrice: total price of all the components in the shopping cart
+   * cartModalIsOpen: boolean whether the cart modal is open
+   * errorMessage: error to show user when input is too high / low
+   */
   state = {
     width: 0,
     bundle: {},
@@ -15,32 +25,59 @@ class App extends React.Component {
     totalCartItems: 0,
     totalCartPrice: 0,
     cartModalIsOpen: false,
+    errorMessage: "",
   };
   options = options;
-
+  /**
+   * temporarily show supplied error message to user
+   * @param {string} errorMessage
+   */
   flashError = (errorMessage) => {
     this.setState({ errorMessage });
     setTimeout(() => {
       this.setState({ errorMessage: "" });
     }, 5000);
   };
-
+  /**
+   * clear entire contents of this cart
+   */
   emptyCart() {
     this.setState({ cart: {} });
   }
+  /**
+   *
+   * @returns number of individual items in cart
+   */
+  countTotalCartItems() {
+    let totalCartItems = 0;
+    for (var x in this.state.bundle) {
+      totalCartItems += this.state.bundle[x];
+    }
+    return totalCartItems;
+  }
+  /**
+   *
+   * @returns sum total of items in cart
+   */
+  sumTotalCartPrice() {
+    let totalCartPrice = 0;
+    for (var i in this.state.bundle) {
+      totalCartPrice += this.options[i].price * this.state.bundle[i];
+    }
+    return totalCartPrice;
+  }
 
+  /**
+   * make the cart contents equal the currently generated bundle
+   */
   updateCart() {
     this.setState({ cart: { ...this.state.bundle } }, () => {
       // update totals
-      let totalCartItems = 0;
-      for (var x in this.state.bundle) {
-        totalCartItems += this.state.bundle[x];
-      }
-      let totalCartPrice = 0;
-      for (var i in this.state.bundle) {
-        totalCartPrice += this.options[i].price * this.state.bundle[i];
-      }
-      this.setState({ totalCartItems, totalCartPrice });
+
+      this.setState({
+        totalCartItems: this.countTotalCartItems(),
+        totalCartPrice: this.sumTotalCartPrice(),
+      });
     });
   }
 
@@ -84,44 +121,54 @@ class App extends React.Component {
       );
     }
   }
-
-  buildButtonHandler(e) {
-    e.preventDefault();
-    this.setState({ bundle: {}, errorMessage: "" }, () => {
-      if (
-        this.state.width >=
-        this.options.gate.length - this.options.gate.tolerance
-      ) {
-        this.setState(
-          {
-            bundle: buildBundle(this.options, this.state.width),
-          },
-          () => {
-            // compute total bundle max-length
-            let totalBundleMaxLength = 0;
-            for (var k in this.state.bundle) {
-              totalBundleMaxLength +=
-                this.options[k].length * this.state.bundle[k];
-            }
-            this.setState({ totalBundleMaxLength });
-          }
-        );
-      } else {
-        this.flashError("We don't have any configurations this small.");
-      }
-    });
+  bundleMaxLength() {
+    // compute total bundle max-length
+    let totalBundleMaxLength = 0;
+    for (var k in this.state.bundle) {
+      totalBundleMaxLength += this.options[k].length * this.state.bundle[k];
+    }
+    this.setState({ totalBundleMaxLength });
   }
+  /**
+   * build bundle if input is valid
+   */
+  buildBundleIfValidInput() {
+    if (
+      this.state.width >=
+      this.options.gate.length - this.options.gate.tolerance
+    ) {
+      this.setState(
+        {
+          bundle: buildBundle(this.options, this.state.width),
+        },
+        this.bundleMaxLength
+      );
+    } else {
+      this.flashError("We don't have any configurations this small.");
+    }
+  }
+  buildButtonHandler = (e) => {
+    e.preventDefault();
+    this.setState(
+      { bundle: {}, errorMessage: "" },
+      this.buildBundleIfValidInput
+    );
+    this.button.focus();
+  };
+  sizeInputChangeHandler = (e) =>
+    this.setState({ width: parseInt(e.target.value) });
+
+  toggleCartModal = () =>
+    this.setState({
+      cartModalIsOpen: this.state.cartModalIsOpen === false ? true : false,
+    });
+
   render() {
     return (
       <div className={styles.app}>
         <header className={styles.header}>
           <Icon
-            onClick={() => {
-              this.setState({
-                cartModalIsOpen:
-                  this.state.cartModalIsOpen === false ? true : false,
-              });
-            }}
+            onClick={this.toggleCartModal}
             count={this.state.totalCartItems}
             pillClassName={styles.pill}
             className={styles.icon}
@@ -136,13 +183,7 @@ class App extends React.Component {
           />
         </div>
         <div className={styles.wrapper}>
-          <form
-            className={styles.form}
-            onSubmit={(e) => {
-              this.buildButtonHandler(e);
-              this.button.focus();
-            }}
-          >
+          <form className={styles.form} onSubmit={this.buildButtonHandler}>
             <img alt="baby gate" className={styles.img} src={img} />
             <label className={styles.label}>
               Can't find what you want? Use our <strong>Gate-Builder</strong> to
@@ -153,9 +194,7 @@ class App extends React.Component {
               className={styles.input}
               name="number"
               type="number"
-              onChange={(e) => {
-                this.setState({ width: parseInt(e.target.value) });
-              }}
+              onChange={this.sizeInputChangeHandler}
               val={this.state.width}
             />
             <button
