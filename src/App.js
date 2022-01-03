@@ -9,7 +9,7 @@ import Cart from "./components/cart";
 class App extends React.Component {
   /**
    * app state
-   * width: the width of gate required
+   * desiredWidth: the width of gate required
    * bundle: the bundle of gate and extensions required to reach a certain width
    * cart: the user's shopping cart
    * totalCartItems: total number of items in the user's cart
@@ -18,7 +18,7 @@ class App extends React.Component {
    * errorMessage: error to show user when input is too high / low
    */
   state = {
-    width: 0,
+    desiredWidth: 0,
     bundle: {},
     totalBundleMaxLength: 0,
     cart: {},
@@ -48,10 +48,10 @@ class App extends React.Component {
    *
    * @returns number of individual items in cart
    */
-  countTotalCartItems() {
+  countTotalCartItems(cart) {
     let totalCartItems = 0;
-    for (var x in this.state.bundle) {
-      totalCartItems += this.state.bundle[x];
+    for (var x in cart) {
+      totalCartItems += cart[x];
     }
     return totalCartItems;
   }
@@ -59,10 +59,10 @@ class App extends React.Component {
    *
    * @returns sum total of items in cart
    */
-  sumTotalCartPrice() {
+  sumTotalCartPrice(cart) {
     let totalCartPrice = 0;
-    for (var i in this.state.bundle) {
-      totalCartPrice += this.options[i].price * this.state.bundle[i];
+    for (var i in cart) {
+      totalCartPrice += this.options[i].price * cart[i];
     }
     return totalCartPrice;
   }
@@ -70,16 +70,14 @@ class App extends React.Component {
   /**
    * make the cart contents equal the currently generated bundle
    */
-  updateCart() {
-    this.setState({ cart: { ...this.state.bundle } }, () => {
-      // update totals
-
-      this.setState({
-        totalCartItems: this.countTotalCartItems(),
-        totalCartPrice: this.sumTotalCartPrice(),
-      });
+  updateCart = () => {
+    const cart = { ...this.state.bundle };
+    this.setState({
+      cart,
+      totalCartItems: this.countTotalCartItems(cart),
+      totalCartPrice: this.sumTotalCartPrice(cart),
     });
-  }
+  };
 
   renderBundle() {
     const { bundle } = this.state;
@@ -122,27 +120,26 @@ class App extends React.Component {
   /**
    * compute total bundle max-length
    */
-  bundleMaxLength() {
+  bundleMaxLength(bundle) {
     let totalBundleMaxLength = 0;
-    for (var k in this.state.bundle) {
-      totalBundleMaxLength += this.options[k].length * this.state.bundle[k];
+    for (var k in bundle) {
+      totalBundleMaxLength += this.options[k].length * bundle[k];
     }
-    this.setState({ totalBundleMaxLength });
+    return totalBundleMaxLength;
   }
   /**
    * build bundle if input is valid
    */
   buildBundleIfValidInput() {
     if (
-      this.state.width >=
+      this.state.desiredWidth >=
       this.options.gate.length - this.options.gate.tolerance
     ) {
-      this.setState(
-        {
-          bundle: buildBundle(this.options, this.state.width),
-        },
-        this.bundleMaxLength
-      );
+      const bundle = buildBundle(this.options, this.state.desiredWidth);
+      this.setState({
+        bundle,
+        totalBundleMaxLength: this.bundleMaxLength(bundle),
+      });
     } else {
       this.flashError("We don't have any configurations this small.");
     }
@@ -153,10 +150,9 @@ class App extends React.Component {
    */
   buildButtonHandler = (e) => {
     e.preventDefault();
-    this.setState(
-      { bundle: {}, errorMessage: "" },
-      this.buildBundleIfValidInput
-    );
+    if (this.state.errorMessage.length)
+      this.setState({ bundle: {}, errorMessage: "" });
+    this.buildBundleIfValidInput();
     this.button.focus();
   };
   /**
@@ -165,20 +161,21 @@ class App extends React.Component {
    * @returns result of setState
    */
   sizeInputChangeHandler = (e) =>
-    this.setState({ width: parseInt(e.target.value) });
+    this.setState({ desiredWidth: parseInt(e.target.value) });
   /**
    * handle the click event for toggling the cart modal
    * @returns result of setState
    */
   toggleCartModal = () =>
     this.setState({
-      cartModalIsOpen: this.state.cartModalIsOpen === false ? true : false,
+      cartModalIsOpen: !this.state.cartModalIsOpen,
     });
   /**
    * render the app
    * @returns app component
    */
   render() {
+    console.log(this.state);
     return (
       <div className={styles.app}>
         <header className={styles.header}>
@@ -205,12 +202,12 @@ class App extends React.Component {
               build the perfect gate for your home.
             </label>
             <input
-              placeholder="Enter your width in cm"
+              placeholder="Enter your desired width in cm"
               className={styles.input}
               name="number"
               type="number"
               onChange={this.sizeInputChangeHandler}
-              val={this.state.width}
+              val={this.state.desiredWidth}
             />
             <button
               className={styles.button}
