@@ -2,7 +2,7 @@ import React from "react";
 import Icon from "./components/icon";
 import styles from "./app.module.css";
 import img from "./images/find-gate.webp";
-import { options } from "./options";
+import { components } from "./components";
 import { buildBundle } from "./build-bundle";
 import ResultsCard from "./components/results-card";
 import Cart from "./components/cart";
@@ -27,16 +27,14 @@ class App extends React.Component {
     cartModalIsOpen: false,
     errorMessage: "",
   };
-  options = options;
+  options = components;
   /**
    * temporarily show supplied error message to user
    * @param {string} errorMessage
    */
   flashError = (errorMessage) => {
     this.setState({ errorMessage });
-    setTimeout(() => {
-      this.setState({ errorMessage: "" });
-    }, 5000);
+    setTimeout(() => this.setState({ errorMessage: "" }), 5000);
   };
   /**
    * clear entire contents of this cart
@@ -131,10 +129,9 @@ class App extends React.Component {
    * build bundle if input is valid
    */
   buildBundleIfValidInput() {
-    if (
-      this.state.desiredWidth >=
-      this.options.gate.length - this.options.gate.tolerance
-    ) {
+    const gate = this.options[0];
+    console.log(gate);
+    if (this.state.desiredWidth >= gate.width - gate.tolerance) {
       const bundle = buildBundle(this.options, this.state.desiredWidth);
       this.setState({
         bundle,
@@ -150,7 +147,7 @@ class App extends React.Component {
    */
   buildButtonHandler = (e) => {
     e.preventDefault();
-    if (this.state.errorMessage.length)
+    if (this.state.errorMessage.length || Object.keys(this.state.bundle).length)
       this.setState({ bundle: {}, errorMessage: "" });
     this.buildBundleIfValidInput();
     this.button.focus();
