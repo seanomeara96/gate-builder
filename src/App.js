@@ -162,7 +162,7 @@ class App extends React.Component {
    */
   buildButtonHandler = (e) => {
     e.preventDefault();
-    if (this.state.errorMessage.length || Object.keys(this.state.bundle).length)
+    if (this.state.errorMessage.length || this.state.bundle.length)
       this.setState({ bundle: [], errorMessage: "" });
     this.buildBundleIfValidInput();
     this.button.focus();
