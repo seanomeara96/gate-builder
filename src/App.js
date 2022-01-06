@@ -4,8 +4,50 @@ import styles from "./app.module.css";
 import img from "./images/find-gate.webp";
 import { components } from "./components";
 import { buildBundle } from "./build-bundle";
-import ResultsCard from "./components/results-card";
 import Cart from "./components/cart";
+const ResultsCard = ({ bundle, clickHandler, totalBundleMaxLength }) => {
+  const listItem = [];
+  const images = [];
+  const gate = bundle[0];
+
+  for (const item of bundle) {
+    listItem.push(
+      <div className={styles.resultsCard__title}>{`${item.name}`}</div>
+    );
+    for (var i = 0; i < item; i++) {
+      images.push(
+        <img
+          alt={item.name}
+          className={styles.resultsCard__img}
+          src={item.img}
+        />
+      );
+    }
+  }
+  return (
+    <div className={styles.resultsCard}>
+      <div className={styles.wrapper}>
+        <div className={styles.resultsCard__content}>
+          <div className={styles.wrapper}>
+            <h2 className={styles.resultsCard__heading}>
+              Your Bundle: ({totalBundleMaxLength - gate.tolerance}
+              cm - {totalBundleMaxLength}cm)
+            </h2>
+            {listItem}
+            <button
+              className={`${styles.button} ${styles.button__smallButton}`}
+              onClick={clickHandler}
+            >
+              Add Bundle To Cart
+            </button>
+          </div>
+        </div>
+      </div>
+      <div className={styles.resultsCard__imgs}>{images}</div>
+    </div>
+  );
+};
+
 class App extends React.Component {
   /**
    * app state
@@ -19,9 +61,9 @@ class App extends React.Component {
    */
   state = {
     desiredWidth: 0,
-    bundle: {},
+    bundle: [],
     totalBundleMaxLength: 0,
-    cart: {},
+    cart: [],
     totalCartItems: 0,
     totalCartPrice: 0,
     cartModalIsOpen: false,
@@ -40,97 +82,67 @@ class App extends React.Component {
    * clear entire contents of this cart
    */
   emptyCart() {
-    this.setState({ cart: {} });
+    this.setState({ cart: [] });
   }
   /**
    *
    * @returns number of individual items in cart
    */
   countTotalCartItems(cart) {
-    let totalCartItems = 0;
-    for (var x in cart) {
-      totalCartItems += cart[x];
-    }
-    return totalCartItems;
+    return cart.length;
   }
   /**
    *
    * @returns sum total of items in cart
    */
   sumTotalCartPrice(cart) {
-    let totalCartPrice = 0;
-    for (var i in cart) {
-      totalCartPrice += this.options[i].price * cart[i];
-    }
-    return totalCartPrice;
+    return cart.reduce((a, b) => {
+      return a + b.price * b.qty;
+    }, 0);
   }
 
   /**
    * make the cart contents equal the currently generated bundle
    */
   updateCart = () => {
-    const cart = { ...this.state.bundle };
+    /**
+     * convert the bundle format into an array that includes the quantity of each unique item
+     */
+    const uniqueBundleItems = [...new Set(this.state.bundle)];
+    const cart = uniqueBundleItems.map((item) => ({
+      name: item.name,
+      price: item.price,
+      qty: this.state.bundle.reduce(
+        (a, b) => (b.id === item.id ? a + 1 : a),
+        0
+      ),
+    }));
+
     this.setState({
       cart,
-      totalCartItems: this.countTotalCartItems(cart),
+      totalCartItems: this.countTotalCartItems(this.state.bundle),
       totalCartPrice: this.sumTotalCartPrice(cart),
     });
   };
 
-  renderBundle() {
-    const { bundle } = this.state;
-    let listItem = [];
-    let images = [];
-    let count = 0;
-    if (bundle.gate > 0) {
-      for (var item in bundle) {
-        if (bundle[item] > 0) {
-          listItem.unshift(
-            <div
-              className={styles.resultsCard__title}
-              key={count}
-            >{`${bundle[item]} x ${this.options[item].name}`}</div>
-          );
-          for (var i = 0; i < bundle[item]; i++) {
-            images.push(
-              <img
-                alt={this.options[item].name}
-                className={styles.resultsCard__img}
-                src={this.options[item].img}
-                key={count + i}
-              />
-            );
-          }
-        }
-        count++;
-      }
-      return (
-        <ResultsCard
-          options={this.options}
-          totalBundleMaxLength={this.state.totalBundleMaxLength}
-          listItem={listItem}
-          images={images}
-          onClick={this.updateCart}
-        />
-      );
-    }
-  }
   /**
    * compute total bundle max-length
    */
   bundleMaxLength(bundle) {
-    let totalBundleMaxLength = 0;
-    for (var k in bundle) {
-      totalBundleMaxLength += this.options[k].length * bundle[k];
+    function bundleWidth(bundle, width = 0, count = 0) {
+      if (count < bundle.length) {
+        return bundleWidth(bundle, width + bundle[count].width, count + 1);
+      }
+      return width;
     }
-    return totalBundleMaxLength;
+    return bundleWidth(bundle);
   }
   /**
    * build bundle if input is valid
    */
   buildBundleIfValidInput() {
     const gate = this.options[0];
-    console.log(gate);
+
     if (this.state.desiredWidth >= gate.width - gate.tolerance) {
       const bundle = buildBundle(this.options, this.state.desiredWidth);
       this.setState({
@@ -148,7 +160,7 @@ class App extends React.Component {
   buildButtonHandler = (e) => {
     e.preventDefault();
     if (this.state.errorMessage.length || Object.keys(this.state.bundle).length)
-      this.setState({ bundle: {}, errorMessage: "" });
+      this.setState({ bundle: [], errorMessage: "" });
     this.buildBundleIfValidInput();
     this.button.focus();
   };
@@ -188,7 +200,6 @@ class App extends React.Component {
             totalCartItems={this.state.totalCartItems}
             isOpen={this.state.cartModalIsOpen}
             cartContents={this.state.cart}
-            options={this.options}
           />
         </div>
         <div className={styles.wrapper}>
@@ -218,7 +229,13 @@ class App extends React.Component {
           <div className={styles.wrapper}>
             <div className={styles.errorMessage}>{this.state.errorMessage}</div>
           </div>
-          {this.renderBundle()}
+          {this.state.bundle.length ? (
+            <ResultsCard
+              bundle={this.state.bundle}
+              clickHandler={this.updateCart}
+              totalBundleMaxLength={this.state.totalBundleMaxLength}
+            />
+          ) : null}
         </div>
       </div>
     );
