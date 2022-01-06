@@ -96,9 +96,7 @@ class App extends React.Component {
    * @returns sum total of items in cart
    */
   sumTotalCartPrice(cart) {
-    return cart.reduce((a, b) => {
-      return a + b.price * b.qty;
-    }, 0);
+    return cart.reduce((a, b) => a + b.price * b.qty, 0);
   }
 
   /**
@@ -109,9 +107,14 @@ class App extends React.Component {
      * convert the bundle format into an array that includes the quantity of each unique item
      */
     const uniqueBundleItems = [...new Set(this.state.bundle)];
+    /**
+     * should probably save this to stae as abbrBundle instead so that I can use it
+     * for consisely desplaying bundle contents in the results block
+     */
     const cart = uniqueBundleItems.map((item) => ({
       name: item.name,
       price: item.price,
+      // this code counts instances of
       qty: this.state.bundle.reduce(
         (a, b) => (b.id === item.id ? a + 1 : a),
         0
