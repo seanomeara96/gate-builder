@@ -5,24 +5,32 @@ import img from "./images/find-gate.webp";
 import { components } from "./components";
 import { buildBundle } from "./build-bundle";
 import Cart from "./components/cart";
-const ResultsCard = ({ bundle, clickHandler, totalBundleMaxLength }) => {
+const ResultsCard = ({
+  bundle,
+  abbrBundle,
+  clickHandler,
+  totalBundleMaxLength,
+}) => {
   const listItem = [];
   const images = [];
   const gate = bundle[0];
 
-  for (const item of bundle) {
+  for (const item of abbrBundle) {
     listItem.push(
-      <div className={styles.resultsCard__title}>{`${item.name}`}</div>
+      <div className={styles.resultsCard__title}>
+        {item.name} &times; {item.qty}
+      </div>
     );
-    for (var i = 0; i < item; i++) {
-      images.push(
-        <img
-          alt={item.name}
-          className={styles.resultsCard__img}
-          src={item.img}
-        />
-      );
-    }
+  }
+
+  for (const component of bundle) {
+    images.push(
+      <img
+        alt={component.name}
+        className={styles.resultsCard__img}
+        src={component.img}
+      />
+    );
   }
   return (
     <div className={styles.resultsCard}>
@@ -62,6 +70,7 @@ class App extends React.Component {
   state = {
     desiredWidth: 0,
     bundle: [],
+    abbrBundle: [],
     totalBundleMaxLength: 0,
     cart: [],
     totalCartItems: 0,
@@ -99,32 +108,31 @@ class App extends React.Component {
     return cart.reduce((a, b) => a + b.price * b.qty, 0);
   }
 
-  /**
-   * make the cart contents equal the currently generated bundle
-   */
-  updateCart = () => {
+  generateAbbreviatedBundle(bundle) {
     /**
      * convert the bundle format into an array that includes the quantity of each unique item
      */
-    const uniqueBundleItems = [...new Set(this.state.bundle)];
+    const uniqueBundleItems = [...new Set(bundle)];
     /**
      * should probably save this to stae as abbrBundle instead so that I can use it
      * for consisely desplaying bundle contents in the results block
      */
-    const cart = uniqueBundleItems.map((item) => ({
+    return uniqueBundleItems.map((item) => ({
       name: item.name,
       price: item.price,
       // this code counts instances of
-      qty: this.state.bundle.reduce(
-        (a, b) => (b.id === item.id ? a + 1 : a),
-        0
-      ),
+      qty: bundle.reduce((a, b) => (b.id === item.id ? a + 1 : a), 0),
     }));
+  }
 
+  /**
+   * make the cart contents equal the currently generated bundle
+   */
+  updateCart = () => {
     this.setState({
-      cart,
+      cart: this.state.abbrBundle,
       totalCartItems: this.countTotalCartItems(this.state.bundle),
-      totalCartPrice: this.sumTotalCartPrice(cart),
+      totalCartPrice: this.sumTotalCartPrice(this.state.abbrBundle),
     });
   };
 
@@ -150,6 +158,7 @@ class App extends React.Component {
       const bundle = buildBundle(this.options, this.state.desiredWidth);
       this.setState({
         bundle,
+        abbrBundle: this.generateAbbreviatedBundle(bundle),
         totalBundleMaxLength: this.bundleMaxLength(bundle),
       });
     } else {
@@ -234,6 +243,7 @@ class App extends React.Component {
           </div>
           {this.state.bundle.length ? (
             <ResultsCard
+              abbrBundle={this.state.abbrBundle}
               bundle={this.state.bundle}
               clickHandler={this.updateCart}
               totalBundleMaxLength={this.state.totalBundleMaxLength}

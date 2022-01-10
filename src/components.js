@@ -1,3 +1,7 @@
+import gate from "./images/gate.webp";
+import extension1 from "./images/largeExtension.jpg";
+import extension2 from "./images/medExtension.jpg";
+import extension3 from "./images/smallExtension.jpg";
 export const components = [
   {
     type: "gate",
@@ -5,7 +9,7 @@ export const components = [
     width: 76,
     price: 76,
     id: 1,
-    img: "./images/gate.webp",
+    img: gate,
     isExtension: false,
     tolerance: 6,
   },
@@ -15,7 +19,7 @@ export const components = [
     width: 64,
     price: 64,
     id: 2,
-    img: "./images/largeExtension.jpg",
+    img: extension1,
     isExtension: true,
     tolerance: 0,
   },
@@ -25,7 +29,7 @@ export const components = [
     width: 32,
     price: 32,
     id: 3,
-    img: "./images/medExtension.jpg",
+    img: extension2,
     isExtension: true,
     tolerance: 0,
   },
@@ -35,7 +39,7 @@ export const components = [
     width: 7,
     price: 7,
     id: 4,
-    img: "./images/smallExtension.jpg",
+    img: extension3,
     isExtension: true,
     tolerance: 0,
   },
