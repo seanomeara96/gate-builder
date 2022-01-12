@@ -1,23 +1,21 @@
 import React from "react";
 import styles from "./cart.module.css";
 import CartButtons from "./cart-buttons";
-const Cart = (props) => {
+const Cart = ({ cartContents, isOpen, totalCartItems }) => {
   let contents = [];
-  for (var x in props.cartContents) {
-    if (props.cartContents[x] > 0) {
-      contents.push(
-        <div key={x} className={styles.result}>
-          <h3 className={styles.result__name}>{props.options[x].name}</h3>
-          <span className={styles.result__price}>
-            €{props.options[x].price} &times; {props.cartContents[x]}
-          </span>
-        </div>
-      );
-    }
+  for (const item of cartContents) {
+    contents.push(
+      <div className={styles.result}>
+        <h3 className={styles.result__name}>{item.name}</h3>
+        <span className={styles.result__price}>
+          €{item.price} &times; {item.qty}
+        </span>
+      </div>
+    );
   }
-  return props.isOpen === true ? (
+  return isOpen === true ? (
     <div className={styles.cart}>
-      {props.totalCartItems > 0 ? (
+      {totalCartItems > 0 ? (
         <div style={{ padding: "3rem" }}>
           {contents}
           <CartButtons />
