@@ -5,56 +5,7 @@ import img from "./images/find-gate.webp";
 import { components } from "./components";
 import { buildBundle } from "./build-bundle";
 import Cart from "./components/cart";
-const ResultsCard = ({
-  bundle,
-  abbrBundle,
-  clickHandler,
-  totalBundleMaxLength,
-}) => {
-  const listItem = [];
-  const images = [];
-  const gate = bundle[0];
-
-  for (const item of abbrBundle) {
-    listItem.push(
-      <div className={styles.resultsCard__title}>
-        {item.name} &times; {item.qty}
-      </div>
-    );
-  }
-
-  for (const component of bundle) {
-    images.push(
-      <img
-        alt={component.name}
-        className={styles.resultsCard__img}
-        src={component.img}
-      />
-    );
-  }
-  return (
-    <div className={styles.resultsCard}>
-      <div className={styles.wrapper}>
-        <div className={styles.resultsCard__content}>
-          <div className={styles.wrapper}>
-            <h2 className={styles.resultsCard__heading}>
-              Your Bundle: ({totalBundleMaxLength - gate.tolerance}
-              cm - {totalBundleMaxLength}cm)
-            </h2>
-            {listItem}
-            <button
-              className={`${styles.button} ${styles.button__smallButton}`}
-              onClick={clickHandler}
-            >
-              Add Bundle To Cart
-            </button>
-          </div>
-        </div>
-      </div>
-      <div className={styles.resultsCard__imgs}>{images}</div>
-    </div>
-  );
-};
+import { ResultsCard } from "./components/results-card";
 
 class App extends React.Component {
   /**
@@ -87,9 +38,6 @@ class App extends React.Component {
     this.setState({ errorMessage });
     setTimeout(() => this.setState({ errorMessage: "" }), 5000);
   };
-  /**
-   * clear entire contents of this cart
-   */
   emptyCart() {
     this.setState({ cart: [] });
   }
@@ -248,7 +196,7 @@ class App extends React.Component {
               clickHandler={this.updateCart}
               totalBundleMaxLength={this.state.totalBundleMaxLength}
             />
-          ) : null}
+          ) : ""}
         </div>
       </div>
     );
