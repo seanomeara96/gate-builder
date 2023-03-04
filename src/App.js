@@ -21,7 +21,6 @@ class App extends React.Component {
   state = {
     desiredWidth: 0,
     bundle: [],
-    abbrBundle: [],
     totalBundleMaxLength: 0,
     cart: [],
     totalCartItems: 0,
@@ -56,31 +55,15 @@ class App extends React.Component {
     return cart.reduce((a, b) => a + b.price * b.qty, 0);
   }
 
-  generateAbbreviatedBundle(bundle) {
-    /**
-     * convert the bundle format into an array that includes the quantity of each unique item
-     */
-    const uniqueBundleItems = [...new Set(bundle)];
-    /**
-     * should probably save this to stae as abbrBundle instead so that I can use it
-     * for consisely desplaying bundle contents in the results block
-     */
-    return uniqueBundleItems.map((item) => ({
-      name: item.name,
-      price: item.price,
-      // this code counts instances of
-      qty: bundle.reduce((a, b) => (b.id === item.id ? a + 1 : a), 0),
-    }));
-  }
-
   /**
    * make the cart contents equal the currently generated bundle
+   * TODO add a param to update cart
    */
-  updateCart = () => {
+  updateCart = (bundle, abbrBundle) => {
     this.setState({
-      cart: this.state.abbrBundle,
-      totalCartItems: this.countTotalCartItems(this.state.bundle),
-      totalCartPrice: this.sumTotalCartPrice(this.state.abbrBundle),
+      cart: abbrBundle,
+      totalCartItems: this.countTotalCartItems(bundle),
+      totalCartPrice: this.sumTotalCartPrice(abbrBundle),
     });
   };
 
@@ -106,7 +89,6 @@ class App extends React.Component {
       const bundle = buildBundle(this.options, this.state.desiredWidth);
       this.setState({
         bundle,
-        abbrBundle: this.generateAbbreviatedBundle(bundle),
         totalBundleMaxLength: this.bundleMaxLength(bundle),
       });
     } else {
@@ -191,7 +173,6 @@ class App extends React.Component {
           </div>
           {this.state.bundle.length ? (
             <ResultsCard
-              abbrBundle={this.state.abbrBundle}
               bundle={this.state.bundle}
               clickHandler={this.updateCart}
               totalBundleMaxLength={this.state.totalBundleMaxLength}

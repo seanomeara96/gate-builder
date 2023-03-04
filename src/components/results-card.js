@@ -1,10 +1,29 @@
 import React from "react";
 import { CartButton } from "./cart-button";
 import styles from "./results-card.module.css";
+
+function generateAbbreviatedBundle(bundle) {
+  /**
+   * convert the bundle format into an array that includes the quantity of each unique item
+   */
+  const uniqueBundleItems = [...new Set(bundle)];
+  /**
+   * should probably save this to stae as abbrBundle instead so that I can use it
+   * for consisely desplaying bundle contents in the results block
+   */
+  return uniqueBundleItems.map((item) => ({
+    name: item.name,
+    price: item.price,
+    // this code counts instances of
+    qty: bundle.reduce((a, b) => (b.id === item.id ? a + 1 : a), 0),
+  }));
+}
+
 export const ResultsCard = (props) => {
   const gate = props.bundle[0];
+  const abbrBundle = generateAbbreviatedBundle(props.bundle);
 
-  const listItem = props.abbrBundle.map((item, index) => (
+  const listItem = abbrBundle.map((item, index) => (
     <li key={index} className={styles.resultsCard__title}>
       {item.name} &times; {item.qty}
     </li>
@@ -47,7 +66,9 @@ export const ResultsCard = (props) => {
               </summary>
               <ul>{listItem}</ul>
             </details>
-            <CartButton clickHandler={props.clickHandler} />
+            <CartButton
+              clickHandler={() => props.clickHandler(props.bundle, abbrBundle)}
+            />
           </div>
         </div>
       </div>
