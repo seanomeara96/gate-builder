@@ -1,5 +1,5 @@
 /**
- * this function takes the gate components and configures them in such a way that the bundle is built with the largest possible extensions
+ * this function takes the gate components and configures them in such a way that the bundle is built with the largest possible extensions first
  * @param {*} components
  * @param {*} desiredWidth
  * @returns
