@@ -2,7 +2,6 @@ import React from "react";
 import Icon from "./components/icon";
 import styles from "./app.module.css";
 import img from "./images/find-gate.webp";
-import { components } from "./components";
 import { buildBundle } from "./build-bundle";
 import Cart from "./components/cart";
 import { ResultsCard } from "./components/results-card";
@@ -20,15 +19,13 @@ class App extends React.Component {
    */
   state = {
     desiredWidth: 0,
-    bundle: [],
-    totalBundleMaxLength: 0,
+    bundles: [],
     cart: [],
     totalCartItems: 0,
     totalCartPrice: 0,
     cartModalIsOpen: false,
     errorMessage: "",
   };
-  options = components;
   /**
    * temporarily show supplied error message to user
    * @param {string} errorMessage
@@ -44,52 +41,37 @@ class App extends React.Component {
    *
    * @returns number of individual items in cart
    */
-  countTotalCartItems(cart) {
-    return cart.length;
+  countTotalCartItems(abbrBundle) {
+    return abbrBundle.reduce((a, c) => a + c.qty, 0);
   }
   /**
    *
    * @returns sum total of items in cart
    */
-  sumTotalCartPrice(cart) {
-    return cart.reduce((a, b) => a + b.price * b.qty, 0);
+  sumTotalCartPrice(abbrBundle) {
+    return abbrBundle.reduce((a, c) => a + c.price * c.qty, 0);
   }
 
   /**
    * make the cart contents equal the currently generated bundle
    * TODO add a param to update cart
    */
-  updateCart = (bundle, abbrBundle) => {
+  updateCart = (abbrBundle) => {
     this.setState({
       cart: abbrBundle,
-      totalCartItems: this.countTotalCartItems(bundle),
+      totalCartItems: this.countTotalCartItems(abbrBundle),
       totalCartPrice: this.sumTotalCartPrice(abbrBundle),
     });
   };
 
   /**
-   * compute total bundle max-length
-   */
-  bundleMaxLength(bundle) {
-    function bundleWidth(bundle, width = 0, count = 0) {
-      if (count < bundle.length) {
-        return bundleWidth(bundle, width + bundle[count].width, count + 1);
-      }
-      return width;
-    }
-    return bundleWidth(bundle);
-  }
-  /**
    * build bundle if input is valid
    */
   buildBundleIfValidInput() {
-    const gate = this.options[0];
-
-    if (this.state.desiredWidth >= gate.width - gate.tolerance) {
-      const bundle = buildBundle(this.options, this.state.desiredWidth);
+    const bundles = buildBundle(this.state.desiredWidth);
+    if (bundles.length) {
       this.setState({
-        bundle,
-        totalBundleMaxLength: this.bundleMaxLength(bundle),
+        bundles,
       });
     } else {
       this.flashError("We don't have any configurations this small.");
@@ -101,8 +83,8 @@ class App extends React.Component {
    */
   buildButtonHandler = (e) => {
     e.preventDefault();
-    if (this.state.errorMessage.length || this.state.bundle.length)
-      this.setState({ bundle: [], errorMessage: "" });
+    if (this.state.errorMessage.length || this.state.bundles.length)
+      this.setState({ bundles: [], errorMessage: "" });
     this.buildBundleIfValidInput();
     this.button.focus();
   };
@@ -171,13 +153,15 @@ class App extends React.Component {
           <div className={styles.wrapper}>
             <div className={styles.errorMessage}>{this.state.errorMessage}</div>
           </div>
-          {this.state.bundle.length ? (
-            <ResultsCard
-              bundle={this.state.bundle}
-              clickHandler={this.updateCart}
-              totalBundleMaxLength={this.state.totalBundleMaxLength}
-            />
-          ) : ""}
+          {this.state.bundles.length
+            ? this.state.bundles.map((bundle, index) => (
+                <ResultsCard
+                  key={index}
+                  bundle={bundle}
+                  clickHandler={this.updateCart}
+                />
+              ))
+            : ""}
         </div>
       </div>
     );
