@@ -1,4 +1,6 @@
-import { gates, extensions } from "./components";
+import gates from "./data/gates.json";
+import extensions from "./data/extensions.json";
+import compatibles from "./data/compatibles.json";
 export function buildBundle(desiredWidth) {
   const bundles = [];
   for (const gate of gates) {
@@ -6,19 +8,32 @@ export function buildBundle(desiredWidth) {
       // gate too big
       continue;
     }
-    /**
-     * sorting extensions by width descending
-     */
-    const compatibleExtensions = extensions
-      .filter((extension) => extension.compatible_with.includes(gate.id))
-      .sort((a, b) => b.width - a.width);
-    const smallestExtension =
-      compatibleExtensions[compatibleExtensions.length - 1];
     gate.qty = 1;
+
     const bundle = {
       gate,
       extensions: [],
     };
+    /**
+     * sorting extensions by width descending
+     */
+    const compatibleExtensions = [];
+    for (const c of compatibles) {
+      if (c.gate_id === gate.id) {
+        const extension = extensions.find((ex) => ex.id === c.extension_id);
+        if (extension) {
+          compatibleExtensions.push(extension);
+        }
+      }
+    }
+    //extensions
+    //  .filter((extension) => extension.compatible_with.includes(gate.id))
+
+    compatibleExtensions.sort((a, b) => b.width - a.width);
+
+    const smallestExtension =
+      compatibleExtensions[compatibleExtensions.length - 1];
+
     let widthRemaining = desiredWidth - gate.width;
     let extensionIndex = 0;
     while (widthRemaining > 0) {

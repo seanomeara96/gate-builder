@@ -1,0 +1,8 @@
+[
+  { "id": 1, "gate_id": 1, "extension_id": 1 },
+  { "id": 2, "gate_id": 1, "extension_id": 2 },
+  { "id": 3, "gate_id": 1, "extension_id": 3 },
+  { "id": 4, "gate_id": 2, "extension_id": 4 },
+  { "id": 5, "gate_id": 2, "extension_id": 5 },
+  { "id": 6, "gate_id": 2, "extension_id": 6 }
+]

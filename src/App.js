@@ -1,7 +1,6 @@
 import React from "react";
 import Icon from "./components/icon";
 import styles from "./app.module.css";
-import img from "./images/find-gate.webp";
 import { buildBundle } from "./build-bundle";
 import Cart from "./components/cart";
 import { ResultsCard } from "./components/results-card";
@@ -128,7 +127,11 @@ class App extends React.Component {
         </div>
         <div className={styles.wrapper}>
           <form className={styles.form} onSubmit={this.buildButtonHandler}>
-            <img alt="baby gate" className={styles.img} src={img} />
+            <img
+              alt="baby gate"
+              className={styles.img}
+              src={`${process.env.PUBLIC_URL}/images/find-gate.webp`}
+            />
             <label className={styles.label}>
               Can't find what you want? Use our <strong>Gate-Builder</strong> to
               build the perfect gate for your home.
@@ -149,10 +152,10 @@ class App extends React.Component {
             </button>
           </form>
         </div>
+        <div className={styles.wrapper}>
+          <div className={styles.errorMessage}>{this.state.errorMessage}</div>
+        </div>
         <div className={styles.results}>
-          <div className={styles.wrapper}>
-            <div className={styles.errorMessage}>{this.state.errorMessage}</div>
-          </div>
           {this.state.bundles.length
             ? this.state.bundles.map((bundle, index) => (
                 <ResultsCard

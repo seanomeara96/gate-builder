@@ -111,6 +111,12 @@
   background-color: #fff;
   padding: 2rem 0;
 }
+@media (min-width: 600px) {
+  .results {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
 .img {
   position: absolute;
   top: 0;

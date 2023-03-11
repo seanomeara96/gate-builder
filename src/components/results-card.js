@@ -9,7 +9,7 @@ export const ResultsCard = (props) => {
       {item.name} &times; {item.qty}
     </li>
   ));
-  
+
   const images = [];
   let zIndex = 1000;
   for (let x = 0; x < abbrBundle.length; x++) {
@@ -23,7 +23,7 @@ export const ResultsCard = (props) => {
           key={JSON.stringify({ x, i })}
           alt={component.name}
           className={styles.resultsCard__img}
-          src={component.img}
+          src={process.env.PUBLIC_URL + component.img}
         />
       );
       zIndex--;
@@ -32,29 +32,28 @@ export const ResultsCard = (props) => {
 
   return (
     <div className={styles.resultsCard}>
-        <div className={styles.resultsCard__content}>
-          <div className={styles.wrapper}>
-            <h2 className={styles.resultsCard__heading}>
-              {props.bundle.maxLength - gate.tolerance}
-              cm - {props.bundle.maxLength}cm Bundle
-            </h2>
-            <div className={styles.resultsCard__imgs}>{images}</div>
-            <details open={window.screen.width > 600 ? true : false}>
-              <summary>
-                {props.bundle.gate.color[0].toUpperCase() +
-                  props.bundle.gate.color.substring(1) +
-                  " "}
-                gate and{" "}
-                {props.bundle.extensions.reduce((a, c) => a + c.qty, 0)}{" "}
-                Extensions
-              </summary>
-              <ul>{listItem}</ul>
-            </details>
-            <CartButton
-              clickHandler={() => props.clickHandler(props.bundle, abbrBundle)}
-            />
-          </div>
+      <div className={styles.resultsCard__content}>
+        <div className={styles.wrapper}>
+          <h2 className={styles.resultsCard__heading}>
+            {props.bundle.maxLength - gate.tolerance}
+            cm - {props.bundle.maxLength}cm Bundle
+          </h2>
+          <div className={styles.resultsCard__imgs}>{images}</div>
+          <details open={window.screen.width > 600 ? true : false}>
+            <summary>
+              {props.bundle.gate.color[0].toUpperCase() +
+                props.bundle.gate.color.substring(1) +
+                " "}
+              gate and {props.bundle.extensions.reduce((a, c) => a + c.qty, 0)}{" "}
+              Extensions
+            </summary>
+            <ul>{listItem}</ul>
+          </details>
+          <CartButton
+            clickHandler={() => props.clickHandler(props.bundle, abbrBundle)}
+          />
         </div>
+      </div>
     </div>
   );
 };
